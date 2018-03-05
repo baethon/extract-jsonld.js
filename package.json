@@ -10,7 +10,10 @@
     "lint": "standard",
     "lint:fix": "standard --fix",
     "test": "jest",
-    "prepush": "npm run lint"
+    "prepush": "npm run lint",
+    "tag:patch": "npm version patch -m 'chore(package): bump version to %s'",
+    "tag:minor": "npm version minor -m 'chore(package): bump version to %s'",
+    "tag:major": "npm version major -m 'chore(package): bump version to %s'"
   },
   "dependencies": {
     "folktale": "^2.1.0",
@@ -22,6 +25,9 @@
     "nock": "^9.2.3",
     "standard": "^11.0.0"
   },
+  "files": [
+    "index.js"
+  ],
   "standard": {
     "globals": [
       "expect",
