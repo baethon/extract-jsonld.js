@@ -1,0 +1,33 @@
+{
+  "name": "@baethon/extract-jsonld",
+  "version": "1.0.0",
+  "description": "Simple utility for extracting JSON-LD data from given URL",
+  "main": "index.js",
+  "author": "Radoslaw Mejer <radmen@radmen.info>",
+  "license": "MIT",
+  "scripts": {
+    "pretest": "standard",
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "test": "jest",
+    "prepush": "npm run lint"
+  },
+  "dependencies": {
+    "jsdom": "^11.6.2"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "jest": "^22.4.2",
+    "nock": "^9.2.3",
+    "standard": "^11.0.0"
+  },
+  "standard": {
+    "globals": [
+      "expect",
+      "beforeAll",
+      "afterEach",
+      "test",
+      "describe"
+    ]
+  }
+}
