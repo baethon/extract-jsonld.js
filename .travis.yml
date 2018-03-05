@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "8"
+  - "9"
+
+env:
+  matrix:
+    - USE_YARN_LOCK="0"
+    - USE_YARN_LOCK="1"
+
+before_install:
+  - if [[ "$USE_YARN_LOCK" == "0" ]]; then rm yarn.lock; fi;
+
+script:
+  - npm test
