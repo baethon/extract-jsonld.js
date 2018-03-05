@@ -7,5 +7,6 @@ const readSync = file => {
 }
 
 module.exports = {
-  validHtml5: readSync(`${__dirname}/valid-html5.html`)
+  validHtml5: readSync(`${__dirname}/valid-html5.html`),
+  invalidHtml5: readSync(`${__dirname}/invalid-html5.html`)
 }

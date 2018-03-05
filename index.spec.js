@@ -1,5 +1,6 @@
 const nock = require('nock')
-const { extract } = require('./index')
+const Maybe = require('folktale/maybe')
+const extract = require('./index')
 const stubs = require('./stubs')
 
 const testHost = 'http://some-page.com'
@@ -22,10 +23,12 @@ afterEach(() => {
 })
 
 test('extracting json-ld schema from webpage', async () => {
-  const scope = createScope(200, stubs.validHtml5)
+  createScope(200, stubs.validHtml5)
+
   const result = await extract(`${testHost}/`)
 
-  expect(result).toEqual({
+  expect(Maybe.hasInstance(result)).toBeTruthy()
+  expect(result).toEqual(Maybe.Just({
     '@context': 'http://schema.org',
     '@type': 'Organization',
     'url': 'http://www.example.com',
@@ -35,5 +38,26 @@ test('extracting json-ld schema from webpage', async () => {
       'telephone': '+1-401-555-1212',
       'contactType': 'Customer service'
     }
-  })
+  }))
+})
+
+test('return Nothing when script tag is missing', async () => {
+  createScope(200, '<html><body></body></html>')
+
+  const result = await extract(`${testHost}/`)
+
+  expect(Maybe.Nothing.hasInstance(result)).toBeTruthy()
+})
+
+test('return Nothing on JSON parse error', async () => {
+  createScope(200, stubs.invalidHtml5)
+
+  const result = await extract(`${testHost}/`)
+
+  expect(Maybe.Nothing.hasInstance(result)).toBeTruthy()
+})
+
+test('reject when unable to load jsdom', async () => {
+  createScope(404, 'Not found')
+  await expect(extract(`${testHost}/`)).rejects.toThrow()
 })

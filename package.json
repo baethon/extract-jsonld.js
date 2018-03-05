@@ -13,6 +13,7 @@
     "prepush": "npm run lint"
   },
   "dependencies": {
+    "folktale": "^2.1.0",
     "jsdom": "^11.6.2"
   },
   "devDependencies": {
