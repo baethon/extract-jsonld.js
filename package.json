@@ -1,8 +1,11 @@
 {
   "name": "@baethon/extract-jsonld",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple utility for extracting JSON-LD data from given URL",
-  "keywords": ["jsdom", "jsonld"],
+  "keywords": [
+    "jsdom",
+    "jsonld"
+  ],
   "main": "index.js",
   "author": "Radoslaw Mejer <radmen@radmen.info>",
   "license": "MIT",
