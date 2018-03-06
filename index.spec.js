@@ -1,5 +1,4 @@
 const nock = require('nock')
-const Maybe = require('folktale/maybe')
 const extract = require('./index')
 const stubs = require('./stubs')
 
@@ -46,7 +45,7 @@ describe('Future', () => {
   test('reject when script tag is missing', (done) => {
     createScope(200, '<html><body></body></html>')
 
-    extract(`${testHost}/`).mapRejected((error) => {
+    extract(`${testHost}/`).mapRejected(() => {
       done()
     })
   })
@@ -108,5 +107,3 @@ describe('Promise', () => {
       .rejects.toThrow()
   })
 })
-
-
