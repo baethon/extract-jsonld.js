@@ -1,6 +1,6 @@
 {
   "name": "@baethon/extract-jsonld",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Simple utility for extracting JSON-LD data from given URL",
   "keywords": [
     "jsdom",
