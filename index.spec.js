@@ -1,5 +1,4 @@
 const nock = require('nock')
-const Maybe = require('folktale/maybe')
 const extract = require('./index')
 const stubs = require('./stubs')
 
@@ -22,42 +21,96 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('extracting json-ld schema from webpage', async () => {
-  createScope(200, stubs.validHtml5)
+describe('Future', () => {
+  test('extracting json-ld schema from webpage', (done) => {
+    createScope(200, stubs.validHtml5)
 
-  const result = await extract(`${testHost}/`)
+    extract(`${testHost}/`)
+      .fork(
+        () => done('Something went wrong'),
+        result => {
+          expect(result).toEqual({
+            '@context': 'http://schema.org',
+            '@type': 'Organization',
+            'url': 'http://www.example.com',
+            'name': 'Unlimited Ball Bearings Corp.',
+            'contactPoint': {
+              '@type': 'ContactPoint',
+              'telephone': '+1-401-555-1212',
+              'contactType': 'Customer service'
+            }
+          })
 
-  expect(Maybe.hasInstance(result)).toBeTruthy()
-  expect(result).toEqual(Maybe.Just({
-    '@context': 'http://schema.org',
-    '@type': 'Organization',
-    'url': 'http://www.example.com',
-    'name': 'Unlimited Ball Bearings Corp.',
-    'contactPoint': {
-      '@type': 'ContactPoint',
-      'telephone': '+1-401-555-1212',
-      'contactType': 'Customer service'
-    }
-  }))
+          done()
+        }
+      )
+  })
+
+  test('reject when script tag is missing', (done) => {
+    createScope(200, '<html><body></body></html>')
+
+    extract(`${testHost}/`).fork(
+      () => done(),
+      () => done('Should not resolve')
+    )
+  })
+
+  test('reject on JSON parse error', (done) => {
+    createScope(200, stubs.invalidHtml5)
+
+    extract(`${testHost}/`).fork(
+      () => done(),
+      () => done('Should not resolve')
+    )
+  })
+
+  test('reject when unable to load jsdom', (done) => {
+    createScope(404, 'Not found')
+
+    extract(`${testHost}/`).fork(
+      () => done(),
+      () => done('Should not resolve')
+    )
+  })
 })
 
-test('return Nothing when script tag is missing', async () => {
-  createScope(200, '<html><body></body></html>')
+describe('Promise', () => {
+  test('resolve json-ld schema from webpage', async () => {
+    createScope(200, stubs.validHtml5)
 
-  const result = await extract(`${testHost}/`)
+    const result = await extract(`${testHost}/`).promise()
 
-  expect(Maybe.Nothing.hasInstance(result)).toBeTruthy()
-})
+    expect(result).toEqual({
+      '@context': 'http://schema.org',
+      '@type': 'Organization',
+      'url': 'http://www.example.com',
+      'name': 'Unlimited Ball Bearings Corp.',
+      'contactPoint': {
+        '@type': 'ContactPoint',
+        'telephone': '+1-401-555-1212',
+        'contactType': 'Customer service'
+      }
+    })
+  })
 
-test('return Nothing on JSON parse error', async () => {
-  createScope(200, stubs.invalidHtml5)
+  test('reject when script tag is missing', async () => {
+    createScope(200, '<html><body></body></html>')
 
-  const result = await extract(`${testHost}/`)
+    await expect(extract(`${testHost}/`).promise())
+      .rejects.toThrow()
+  })
 
-  expect(Maybe.Nothing.hasInstance(result)).toBeTruthy()
-})
+  test('reject on JSON parse error', async () => {
+    createScope(200, stubs.invalidHtml5)
 
-test('reject when unable to load jsdom', async () => {
-  createScope(404, 'Not found')
-  await expect(extract(`${testHost}/`)).rejects.toThrow()
+    await expect(extract(`${testHost}/`).promise())
+      .rejects.toThrow()
+  })
+
+  test('reject when unable to load jsdom', async () => {
+    createScope(404, 'Not found')
+
+    await expect(extract(`${testHost}/`).promise())
+      .rejects.toThrow()
+  })
 })
