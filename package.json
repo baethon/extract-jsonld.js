@@ -20,7 +20,7 @@
     "tag:major": "npm version major -m 'chore(package): bump version to %s'"
   },
   "dependencies": {
-    "folktale": "^2.1.0",
+    "fluture": "^8.0.2",
     "jsdom": "^11.6.2"
   },
   "devDependencies": {
