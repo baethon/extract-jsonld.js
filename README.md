@@ -1,6 +1,12 @@
 # extract-jsonld.js
 Simple utility for extracting JSON-LD data from given URL
 
+# Installation
+
+```bash
+npm i @baethon/extract-jsonld
+```
+
 # Usage
 
 ```js
